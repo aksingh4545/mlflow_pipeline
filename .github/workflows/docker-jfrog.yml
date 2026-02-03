@@ -16,15 +16,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 🔍 TEMP DEBUG (safe, remove later)
-      - name: Verify JFrog secrets exist
-        shell: bash
-        run: |
-          if [ -z "${{ secrets.JFROG_API_KEY }}" ]; then echo "API KEY EMPTY"; else echo "API KEY PRESENT"; fi
-          if [ -z "${{ secrets.JFROG_USERNAME }}" ]; then echo "USERNAME EMPTY"; else echo "USERNAME PRESENT"; fi
-          if [ -z "${{ secrets.JFROG_URL }}" ]; then echo "URL EMPTY"; else echo "URL PRESENT"; fi
-
-      # ✅ FIXED LOGIN STEP
       - name: Login to JFrog Artifactory
         shell: bash
         run: |
@@ -35,12 +26,5 @@ jobs:
       - name: Build Docker image
         run: docker build -t student-performance-api:1.0 .
 
-      - name: Tag Docker image
-        run: docker tag student-performance-api:1.0 \
-          trial08vvqq.jfrog.io/student-performance-docker/student-performance-api:1.0
-
       - name: Push Docker image to JFrog
-        run: docker push \
-          trial08vvqq.jfrog.io/student-performance-docker/student-performance-api:1.0
-##
-
+        run: docker push trial08vvqq.jfrog.io/student-performance-docker/student-performance-api:1.0
