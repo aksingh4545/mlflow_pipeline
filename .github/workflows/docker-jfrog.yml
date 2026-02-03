@@ -1,0 +1,38 @@
+name: Build and Push Docker Image to JFrog
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to JFrog Artifactory
+        run: |
+          echo "${{ secrets.JFROG_API_KEY }}" | docker login \
+            ${{ secrets.JFROG_URL }} \
+            -u "${{ secrets.JFROG_USERNAME }}" \
+            --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t student-performance-api:1.0 .
+
+      - name: Tag Docker image
+        run: |
+          docker tag student-performance-api:1.0 \
+          ${{ secrets.JFROG_URL }}/student-performance-docker/student-performance-api:1.0
+
+      - name: Push Docker image to JFrog
+        run: |
+          docker push \
+          ${{ secrets.JFROG_URL }}/student-performance-docker/student-performance-api:1.0
