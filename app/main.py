@@ -51,7 +51,9 @@ class StudentInput(BaseModel):
 @app.get("/")
 def health():
     return {"status": "API is running"}
-
+@app.get("/hello")
+def hello():
+    return {"message": "Hello, welcome to the Student Performance Prediction API!"}
 @app.post("/predict")
 def predict(data: StudentInput):
     df = pd.DataFrame([data.dict()])
